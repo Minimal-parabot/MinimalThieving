@@ -13,16 +13,16 @@ public class Teleport implements Strategy
     @Override
     public boolean activate()
     {
-        return Relog.isLoggedIn()
-                && Npcs.getNearest(BANDIT_LEADER_ID).length == 0;
+//        return Loader.getClient().isLoggedIn()
+//                && Npcs.getNearest(BANDIT_LEADER_ID).length == 0;
+
+        return Npcs.getNearest(BANDIT_LEADER_ID).length == 0;
     }
 
     @Override
     public void execute()
     {
         MinimalThieving.status = "Teleporting back to stalls";
-
-        System.out.println("Message: " + Loader.getClient().getInterfaceCache()[372].getMessage());
 
         if (Game.getOpenBackDialogId() != 2459)
         {
@@ -48,7 +48,7 @@ public class Teleport implements Strategy
                 public boolean isValid()
                 {
                     return Players.getMyPlayer().getAnimation() == -1
-                            && SceneObjects.getNearest(Stall.getBestStall().getId()).length > 0;
+                            && Npcs.getNearest(BANDIT_LEADER_ID).length > 0;
                 }
             }, 5000);
         }

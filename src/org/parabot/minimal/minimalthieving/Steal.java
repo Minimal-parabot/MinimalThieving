@@ -16,7 +16,7 @@ public class Steal implements Strategy
     @Override
     public boolean activate()
     {
-        stall = Stall.getBestStall();
+        stall = Stall.getStall();
 
         for (SceneObject so : SceneObjects.getNearest(stall.getId()))
         {
@@ -33,7 +33,7 @@ public class Steal implements Strategy
     {
         if (stallObject != null)
         {
-            MinimalThieving.status = "Thieving " + stall.getName();
+            MinimalThieving.status = "Thieving " + stall;
 
             stallObject.interact(0);
 

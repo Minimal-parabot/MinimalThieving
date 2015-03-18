@@ -24,7 +24,7 @@ import java.util.ArrayList;
         description = "Steals from the stalls at ::home in Ikov.",
         name = "Minimal Thieving",
         servers = { "Ikov" },
-        version = 1.4)
+        version = 1.5)
 
 public class MinimalThieving extends Script implements Paintable, MessageListener
 {
@@ -50,8 +50,7 @@ public class MinimalThieving extends Script implements Paintable, MessageListene
 
         timer = new Timer();
 
-        strategies.add(new CreateAccount());
-        strategies.add(new Relog());
+//        strategies.add(new Relog());
         strategies.add(new Teleport());
         strategies.add(new Sell());
         strategies.add(new Wait());
@@ -151,7 +150,7 @@ public class MinimalThieving extends Script implements Paintable, MessageListene
         try
         {
             Class<?> c = Loader.getClient().getClass();
-            Method m = c.getDeclaredMethod("ar");
+            Method m = c.getDeclaredMethod("am");
             m.setAccessible(true);
             m.invoke(Loader.getClient());
         }

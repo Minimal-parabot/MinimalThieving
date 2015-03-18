@@ -3,6 +3,7 @@ package org.parabot.minimal.minimalthieving;
 import org.parabot.environment.api.utils.Time;
 import org.parabot.environment.scripts.framework.SleepCondition;
 import org.parabot.environment.scripts.framework.Strategy;
+import org.rev317.min.Loader;
 import org.rev317.min.api.methods.*;
 import org.rev317.min.api.wrappers.Item;
 import org.rev317.min.api.wrappers.Npc;
@@ -113,7 +114,7 @@ public class Sell implements Strategy
         }
 
         while (!itemsToDeposit.isEmpty()
-                && Relog.isLoggedIn()
+//                && Loader.getClient().isLoggedIn()
                 && Game.getOpenInterfaceId() == 3824)
         {
             int itemId = itemsToDeposit.pop();

@@ -15,13 +15,13 @@ public class Relog implements Strategy
     @Override
     public boolean activate()
     {
-        return !isLoggedIn();
+        return !Loader.getClient().isLoggedIn();
     }
 
     @Override
     public void execute()
     {
-        if (!isLoggedIn())
+        if (!Loader.getClient().isLoggedIn())
         {
             MinimalThieving.status = "Logging in";
 
@@ -38,32 +38,16 @@ public class Relog implements Strategy
                 @Override
                 public boolean isValid()
                 {
-                    return isLoggedIn();
+                    return Loader.getClient().isLoggedIn();
                 }
             }, 5000);
 
-            if (isLoggedIn())
+            if (Loader.getClient().isLoggedIn())
             {
                 MinimalThieving.status = "Waiting after login";
 
                 Time.sleep(4000);
             }
-        }
-    }
-
-    public static boolean isLoggedIn()
-    {
-        try
-        {
-            Field f = Loader.getClient().getClass().getDeclaredField("bz");
-            f.setAccessible(true);
-
-            return f.getBoolean(Loader.getClient());
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-            return false;
         }
     }
 }
