@@ -31,7 +31,7 @@ public class MinimalThieving extends Script implements Paintable, MessageListene
 
     public static Timer timer;
 
-    private Image image = getImage("http://i.imgur.com/jzSHbvs.png");
+    private Image image = getImage("http://i.imgur.com/1q8MPK7.png");
 
     public static String status = "";
 
@@ -72,9 +72,9 @@ public class MinimalThieving extends Script implements Paintable, MessageListene
 
         g.setFont(new Font("Helvetica", Font.PLAIN, 14));
 
-        g.drawString("Time: " + timer.toString(), 555, 257);
-        g.drawString("Money(hr): " + getPerHour(moneyGained), 555, 320);
-        g.drawString("Steals(hr): " + getPerHour(steals), 555, 383);
+        g.drawString("Time: " + timer.toString(), 555, 271);
+        g.drawString("Money(hr): " + getPerHour(moneyGained), 555, 330);
+        g.drawString("Steals(hr): " + getPerHour(steals), 555, 389);
         g.drawString("Randoms: " + randoms, 555, 448);
 
         g.drawString(status, 15, 15);
