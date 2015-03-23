@@ -23,7 +23,7 @@ import java.util.ArrayList;
         description = "Steals from the stalls at ::home in Ikov.",
         name = "Minimal Thieving",
         servers = { "Ikov" },
-        version = 1.5)
+        version = 1.6)
 
 public class MinimalThieving extends Script implements Paintable, MessageListener
 {
@@ -31,7 +31,7 @@ public class MinimalThieving extends Script implements Paintable, MessageListene
 
     public static Timer timer;
 
-    private Image image = getImage("http://i.imgur.com/3WsDK8O.png");
+    private Image image = getImage("http://i.imgur.com/jzSHbvs.png");
 
     public static String status = "";
 
@@ -40,7 +40,6 @@ public class MinimalThieving extends Script implements Paintable, MessageListene
     private int moneyGained;
     private int steals;
     private int randoms;
-    public static int bans;
 
     @Override
     public boolean onExecute()
@@ -49,7 +48,7 @@ public class MinimalThieving extends Script implements Paintable, MessageListene
 
         timer = new Timer();
 
-//        strategies.add(new Relog());
+        strategies.add(new Relog());
         strategies.add(new Teleport());
         strategies.add(new Sell());
         strategies.add(new Wait());
@@ -63,7 +62,7 @@ public class MinimalThieving extends Script implements Paintable, MessageListene
     {
         if (showPaint)
         {
-            g.drawImage(image, 548, 203, null);
+            g.drawImage(image, 546, 209, null);
             g.setColor(Color.BLACK);
         }
         else
@@ -73,11 +72,10 @@ public class MinimalThieving extends Script implements Paintable, MessageListene
 
         g.setFont(new Font("Helvetica", Font.PLAIN, 14));
 
-        g.drawString("Time: " + timer.toString(), 560, 266);
-        g.drawString("Money(hr): " + getPerHour(moneyGained), 560, 306);
-        g.drawString("Steals(hr): " + getPerHour(steals), 560, 346);
-        g.drawString("Randoms(hr): " + getPerHour(randoms), 560, 386);
-        g.drawString("Bans(hr): " + getPerHour(bans), 560, 426);
+        g.drawString("Time: " + timer.toString(), 555, 257);
+        g.drawString("Money(hr): " + getPerHour(moneyGained), 555, 320);
+        g.drawString("Steals(hr): " + getPerHour(steals), 555, 383);
+        g.drawString("Randoms: " + randoms, 555, 448);
 
         g.drawString(status, 15, 15);
     }
@@ -89,7 +87,7 @@ public class MinimalThieving extends Script implements Paintable, MessageListene
         {
             if (m.getMessage().contains("object"))
             {
-                System.out.println("Account was nulled - logout has been forced");
+                status = "Nulled";
 
                 forceLogout();
             }

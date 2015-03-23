@@ -24,22 +24,35 @@ public enum Stall
         this.level = level;
     }
 
+    /**
+     * Gets the id of the stall
+     * @return id
+     */
     public int getId()
     {
         return id;
     }
 
+    /**
+     * Gets the required level of the stall
+     * @return level
+     */
     public int getLevel()
     {
         return level;
     }
 
+    /**
+     * Gets the best stall to thieve
+     * @return stall
+     */
     public static Stall getStall()
     {
         Stall stall = null;
+
         int level = Skill.THIEVING.getRealLevel();
 
-        for (Stall s : Stall.values())
+        for (Stall s : values())
         {
             if (level >= s.getLevel())
                 stall = s;
@@ -48,5 +61,21 @@ public enum Stall
         }
 
         return stall;
+    }
+
+    /**
+     * Gets the object ids of all stalls
+     * @return stallIds
+     */
+    public static int[] getIds()
+    {
+        int[] stallIds = new int[values().length];
+
+        for (int i = 0; i < values().length; i++)
+        {
+            stallIds[i] = values()[i].getId();
+        }
+
+        return stallIds;
     }
 }

@@ -9,31 +9,22 @@ import org.rev317.min.api.wrappers.SceneObject;
 
 public class Steal implements Strategy
 {
-    private Stall stall;
-
-    private SceneObject stallObject;
-
     @Override
     public boolean activate()
     {
-        stall = Stall.getStall();
-
-        for (SceneObject so : SceneObjects.getNearest(stall.getId()))
-        {
-            stallObject = so;
-
-            return true;
-        }
-
-        return false;
+        return SceneObjects.getNearest(Stall.getIds()).length > 0;
     }
 
     @Override
     public void execute()
     {
+        Stall stall = Stall.getStall();
+
+        SceneObject stallObject = SceneObjects.getClosest(stall.getId());
+
         if (stallObject != null)
         {
-            MinimalThieving.status = "Thieving " + stall;
+            MinimalThieving.status = "Stealing from " + stall;
 
             stallObject.interact(0);
 
