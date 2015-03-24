@@ -49,7 +49,7 @@ public class Relog implements Strategy
             {
                 MinimalThieving.status += "..";
 
-                Time.sleep(3000);
+                Time.sleep(4000);
             }
         }
     }

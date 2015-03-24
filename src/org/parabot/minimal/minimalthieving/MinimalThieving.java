@@ -13,6 +13,7 @@ import org.rev317.min.api.events.listeners.MessageListener;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -23,29 +24,27 @@ import java.util.ArrayList;
         description = "Steals from the stalls at ::home in Ikov.",
         name = "Minimal Thieving",
         servers = { "Ikov" },
-        version = 1.6)
+        version = 1.7)
 
 public class MinimalThieving extends Script implements Paintable, MessageListener
 {
     private final ArrayList<Strategy> strategies = new ArrayList<>();
 
-    public static Timer timer;
+    private Image image = getImage("http://i.imgur.com/TNIuZ47.png");
 
-    private Image image = getImage("http://i.imgur.com/1q8MPK7.png");
+    private Timer timer;
 
     public static String status = "";
-
-    private boolean showPaint = false;
 
     private int moneyGained;
     private int steals;
     private int randoms;
 
+    private boolean showPaint = true;
+
     @Override
     public boolean onExecute()
     {
-        showPaint = true;
-
         timer = new Timer();
 
         strategies.add(new Relog());
@@ -60,89 +59,91 @@ public class MinimalThieving extends Script implements Paintable, MessageListene
     @Override
     public void paint(Graphics g)
     {
-        if (showPaint)
-        {
-            g.drawImage(image, 546, 209, null);
-            g.setColor(Color.BLACK);
-        }
-        else
-        {
-            g.setColor(Color.WHITE);
-        }
-
         g.setFont(new Font("Helvetica", Font.PLAIN, 14));
+        g.setColor(new Color(31, 34, 50));
 
+        if (showPaint)
+            g.drawImage(image, 546, 209, null);
+
+        g.drawString(status, 15, 15);
         g.drawString("Time: " + timer.toString(), 555, 271);
         g.drawString("Money(hr): " + getPerHour(moneyGained), 555, 330);
         g.drawString("Steals(hr): " + getPerHour(steals), 555, 389);
         g.drawString("Randoms: " + randoms, 555, 448);
-
-        g.drawString(status, 15, 15);
     }
 
     @Override
     public void messageReceived(MessageEvent m)
     {
+        String message = m.getMessage().toLowerCase();
+
         if (m.getType() == 0)
         {
-            if (m.getMessage().contains("object"))
+            if (message.contains("object"))
             {
                 status = "Nulled";
-
                 forceLogout();
             }
 
-            if (m.getMessage().contains("silk"))
+            if (message.contains("silk"))
             {
                 moneyGained += 5120;
                 steals++;
             }
 
-            if (m.getMessage().contains("golden ring"))
+            if (message.contains("golden ring"))
             {
                 moneyGained += 80;
                 steals++;
             }
 
-            if (m.getMessage().contains("emerald ring"))
+            if (message.contains("emerald ring"))
             {
                 moneyGained += 12000;
                 steals++;
             }
 
-            if (m.getMessage().contains("battlestaff"))
+            if (message.contains("battlestaff"))
             {
                 moneyGained += 16000;
                 steals++;
             }
 
-            if (m.getMessage().contains("adamant scimitar"))
+            if (message.contains("adamant scimitar"))
             {
                 moneyGained += 20000;
                 steals++;
             }
 
-            if (m.getMessage().contains("anti-bot"))
+            if (message.contains("anti-bot"))
             {
                 randoms++;
             }
 
-            if (m.getMessage().contains("command does not exist"))
+            if (message.contains("command does not exist"))
             {
                 if (showPaint)
-                {
                     showPaint = false;
-                }
                 else
-                {
                     showPaint = true;
-                }
             }
         }
     }
 
+    private Image getImage(String str)
+    {
+        try
+        {
+            return ImageIO.read(new URL(str));
+        }
+        catch(IOException e)
+        {
+            return null;
+        }
+    }
+
     // Forces the user to log out
-    public static void forceLogout()
+    private void forceLogout()
     {
         try
         {
@@ -151,20 +152,13 @@ public class MinimalThieving extends Script implements Paintable, MessageListene
             m.setAccessible(true);
             m.invoke(Loader.getClient());
         }
-        catch (Exception e)
+        catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e)
         {
             e.printStackTrace();
         }
     }
 
-    public String getPerHour(int number)
-    {
-        int hourlyNumber = timer.getPerHour(number);
-
-        return formatNumber(number) + "(" + formatNumber(hourlyNumber) + ")";
-    }
-
-    public String formatNumber(double number)
+    private String formatNumber(double number)
     {
         DecimalFormat compact = new DecimalFormat("#,###.0");
 
@@ -181,15 +175,8 @@ public class MinimalThieving extends Script implements Paintable, MessageListene
         return "" + number;
     }
 
-    public Image getImage(String str)
+    private String getPerHour(int number)
     {
-        try
-        {
-            return ImageIO.read(new URL(str));
-        }
-        catch(IOException e)
-        {
-            return null;
-        }
+        return formatNumber(number) + "(" + formatNumber(timer.getPerHour(number)) + ")";
     }
 }

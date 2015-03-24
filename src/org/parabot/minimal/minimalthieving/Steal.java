@@ -18,13 +18,11 @@ public class Steal implements Strategy
     @Override
     public void execute()
     {
-        Stall stall = Stall.getStall();
-
-        SceneObject stallObject = SceneObjects.getClosest(stall.getId());
+        SceneObject stallObject = SceneObjects.getClosest(Stall.getStallId());
 
         if (stallObject != null)
         {
-            MinimalThieving.status = "Stealing from " + stall;
+            MinimalThieving.status = "Stealing";
 
             stallObject.interact(0);
 

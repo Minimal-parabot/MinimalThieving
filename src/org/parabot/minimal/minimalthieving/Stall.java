@@ -42,10 +42,6 @@ public enum Stall
         return level;
     }
 
-    /**
-     * Gets the best stall to thieve
-     * @return stall
-     */
     public static Stall getStall()
     {
         Stall stall = null;
@@ -54,13 +50,41 @@ public enum Stall
 
         for (Stall s : values())
         {
-            if (level >= s.getLevel())
+            if (level >= s.level)
+            {
                 stall = s;
+            }
             else
+            {
                 break;
+            }
         }
 
         return stall;
+    }
+
+    /**
+     * Gets the best stall to thieve
+     * @return stall
+     */
+    public static int getStallId()
+    {
+        int level = Skill.THIEVING.getRealLevel();
+        int stallId = 0;
+
+        for (Stall s : values())
+        {
+            if (level >= s.level)
+            {
+                stallId = s.id;
+            }
+            else
+            {
+                break;
+            }
+        }
+
+        return stallId;
     }
 
     /**
