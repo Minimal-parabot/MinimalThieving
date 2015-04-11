@@ -114,7 +114,7 @@ public class Sell implements Strategy
         }
 
         while (!itemsToDeposit.isEmpty()
-//                && Loader.getClient().isLoggedIn()
+                && Loader.getClient().isLoggedIn()
                 && Game.getOpenInterfaceId() == 3824)
         {
             int itemId = itemsToDeposit.pop();
@@ -123,7 +123,8 @@ public class Sell implements Strategy
             {
                 Item item = Inventory.getItems(itemId)[Inventory.getItems(itemId).length - 1];
 
-                while (Inventory.getItems(itemId).length > 0)
+                while (Inventory.getItems(itemId).length > 0
+                        && Loader.getClient().isLoggedIn())
                 {
                     Menu.sendAction(431, item.getId() - 1, item.getSlot(), 3823);
                     Time.sleep(500);

@@ -24,21 +24,21 @@ import java.util.ArrayList;
         description = "Steals from the stalls at ::home in Ikov.",
         name = "Minimal Thieving",
         servers = { "Ikov" },
-        version = 1.7)
+        version = 1.8)
 
 public class MinimalThieving extends Script implements Paintable, MessageListener
 {
     private final ArrayList<Strategy> strategies = new ArrayList<>();
 
-    private Image image = getImage("http://i.imgur.com/TNIuZ47.png");
+    private final Image IMG = getImage("http://i.imgur.com/TNIuZ47.png");
 
     private Timer timer;
 
     public static String status = "";
 
     private int moneyGained;
-    private int steals;
-    private int randoms;
+    private int stealCount;
+    private int randomCount;
 
     private boolean showPaint = true;
 
@@ -63,13 +63,13 @@ public class MinimalThieving extends Script implements Paintable, MessageListene
         g.setColor(new Color(31, 34, 50));
 
         if (showPaint)
-            g.drawImage(image, 546, 209, null);
+            g.drawImage(IMG, 546, 209, null);
 
         g.drawString(status, 15, 15);
         g.drawString("Time: " + timer.toString(), 555, 271);
         g.drawString("Money(hr): " + getPerHour(moneyGained), 555, 330);
-        g.drawString("Steals(hr): " + getPerHour(steals), 555, 389);
-        g.drawString("Randoms: " + randoms, 555, 448);
+        g.drawString("Steals(hr): " + getPerHour(stealCount), 555, 389);
+        g.drawString("Randoms: " + randomCount, 555, 448);
     }
 
     @Override
@@ -82,45 +82,44 @@ public class MinimalThieving extends Script implements Paintable, MessageListene
             if (message.contains("object"))
             {
                 status = "Nulled";
+
                 forceLogout();
             }
-
-            if (message.contains("silk"))
+            else if (message.contains("silk"))
             {
                 moneyGained += 5120;
-                steals++;
-            }
 
-            if (message.contains("golden ring"))
+                stealCount++;
+            }
+            else if (message.contains("golden ring"))
             {
                 moneyGained += 80;
-                steals++;
-            }
 
-            if (message.contains("emerald ring"))
+                stealCount++;
+            }
+            else if (message.contains("emerald ring"))
             {
                 moneyGained += 12000;
-                steals++;
-            }
 
-            if (message.contains("battlestaff"))
+                stealCount++;
+            }
+            else if (message.contains("battlestaff"))
             {
                 moneyGained += 16000;
-                steals++;
-            }
 
-            if (message.contains("adamant scimitar"))
+                stealCount++;
+            }
+            else if (message.contains("adamant scimitar"))
             {
                 moneyGained += 20000;
-                steals++;
-            }
 
-            if (message.contains("anti-bot"))
+                stealCount++;
+            }
+            else if (message.contains("anti-bot"))
             {
-                randoms++;
+                randomCount++;
             }
-
-            if (message.contains("command does not exist"))
+            else if (message.contains("command does not exist"))
             {
                 if (showPaint)
                     showPaint = false;

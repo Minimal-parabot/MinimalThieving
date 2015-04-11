@@ -19,7 +19,9 @@ public class Relog implements Strategy
     @Override
     public void execute()
     {
-        MinimalThieving.status = "Possible dc";
+        MinimalThieving.status = "Relogging";
+
+        Keyboard.getInstance().clickKey(KeyEvent.VK_ENTER);
 
         Time.sleep(new SleepCondition()
         {
@@ -30,27 +32,11 @@ public class Relog implements Strategy
             }
         }, 3000);
 
-        if (!Loader.getClient().isLoggedIn())
+        if (Loader.getClient().isLoggedIn())
         {
-            MinimalThieving.status = "Relogging";
+            MinimalThieving.status += "..";
 
-            Keyboard.getInstance().clickKey(KeyEvent.VK_ENTER);
-
-            Time.sleep(new SleepCondition()
-            {
-                @Override
-                public boolean isValid()
-                {
-                    return Loader.getClient().isLoggedIn();
-                }
-            }, 3000);
-
-            if (Loader.getClient().isLoggedIn())
-            {
-                MinimalThieving.status += "..";
-
-                Time.sleep(4000);
-            }
+            Time.sleep(4000);
         }
     }
 }
