@@ -21,7 +21,7 @@ import java.util.ArrayList;
 
 @ScriptManifest(author = "Minimal",
         category = Category.THIEVING,
-        description = "Steals from the stalls at ::home in Ikov.",
+        description = "Steals from the stalls at Edgeville in Ikov and sells the items to the Bandit leader.",
         name = "Minimal Thieving",
         servers = { "Ikov" },
         version = 1.9)
@@ -39,8 +39,6 @@ public class MinimalThieving extends Script implements Paintable, MessageListene
     private int moneyGained;
     private int stealCount;
     private int randomCount;
-
-    private boolean showPaint = true;
 
     @Override
     public boolean onExecute()
@@ -62,9 +60,7 @@ public class MinimalThieving extends Script implements Paintable, MessageListene
         g.setFont(new Font("Helvetica", Font.PLAIN, 14));
         g.setColor(new Color(31, 34, 50));
 
-        if (showPaint)
-            g.drawImage(IMG, 546, 209, null);
-
+        g.drawImage(IMG, 546, 209, null);
         g.drawString(status, 15, 15);
         g.drawString("Time: " + timer.toString(), 555, 271);
         g.drawString("Money(hr): " + getPerHour(moneyGained), 555, 330);
@@ -119,13 +115,6 @@ public class MinimalThieving extends Script implements Paintable, MessageListene
             {
                 randomCount++;
             }
-            else if (message.contains("command does not exist"))
-            {
-                if (showPaint)
-                    showPaint = false;
-                else
-                    showPaint = true;
-            }
         }
     }
 
@@ -159,16 +148,20 @@ public class MinimalThieving extends Script implements Paintable, MessageListene
 
     private String formatNumber(double number)
     {
-        DecimalFormat compact = new DecimalFormat("#,###.0");
+        DecimalFormat normal = new DecimalFormat("#,###.0");
+        DecimalFormat goldFarmer = new DecimalFormat("#,###.00");
 
-        if (number >= 1000000)
+        if (number >= 1000 && number < 1000000)
         {
-            return compact.format(number / 1000000) + "M";
+            return normal.format(number / 1000) + "K";
         }
-        else if (number >= 1000
-                && number < 1000000)
+        else if (number >= 1000000 && number < 1000000000)
         {
-            return compact.format(number / 1000) + "K";
+            return normal.format(number / 1000000) + "M";
+        }
+        else if (number >= 1000000000)
+        {
+            return goldFarmer.format(number / 1000000000) + "B";
         }
 
         return "" + number;

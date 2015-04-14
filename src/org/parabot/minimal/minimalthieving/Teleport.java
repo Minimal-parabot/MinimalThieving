@@ -3,12 +3,11 @@ package org.parabot.minimal.minimalthieving;
 import org.parabot.environment.api.utils.Time;
 import org.parabot.environment.scripts.framework.SleepCondition;
 import org.parabot.environment.scripts.framework.Strategy;
-import org.rev317.min.Loader;
 import org.rev317.min.api.methods.*;
 
 public class Teleport implements Strategy
 {
-    private final int BANDIT_LEADER_ID = 1878;
+    private static final int BANDIT_LEADER_ID = 1878;
 
     @Override
     public boolean activate()

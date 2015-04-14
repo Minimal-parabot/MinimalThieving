@@ -4,7 +4,7 @@ import org.parabot.environment.api.utils.Time;
 import org.parabot.environment.input.Keyboard;
 import org.parabot.environment.scripts.framework.SleepCondition;
 import org.parabot.environment.scripts.framework.Strategy;
-import org.rev317.min.Loader;
+import org.rev317.min.api.methods.Game;
 
 import java.awt.event.KeyEvent;
 
@@ -13,7 +13,7 @@ public class Relog implements Strategy
     @Override
     public boolean activate()
     {
-        return !Loader.getClient().isLoggedIn();
+        return !Game.isLoggedIn();
     }
 
     @Override
@@ -28,11 +28,11 @@ public class Relog implements Strategy
             @Override
             public boolean isValid()
             {
-                return Loader.getClient().isLoggedIn();
+                return Game.isLoggedIn();
             }
         }, 3000);
 
-        if (Loader.getClient().isLoggedIn())
+        if (Game.isLoggedIn())
         {
             MinimalThieving.status += "..";
 

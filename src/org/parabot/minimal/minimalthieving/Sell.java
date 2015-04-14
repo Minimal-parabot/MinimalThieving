@@ -3,7 +3,6 @@ package org.parabot.minimal.minimalthieving;
 import org.parabot.environment.api.utils.Time;
 import org.parabot.environment.scripts.framework.SleepCondition;
 import org.parabot.environment.scripts.framework.Strategy;
-import org.rev317.min.Loader;
 import org.rev317.min.api.methods.*;
 import org.rev317.min.api.wrappers.Item;
 import org.rev317.min.api.wrappers.Npc;
@@ -15,9 +14,9 @@ public class Sell implements Strategy
 {
     private Npc banditLeader;
 
-    private final int[] STOLEN_ITEMS = { 951, 1636, 1640, 1332 };
+    private static final int[] STOLEN_ITEMS = { 951, 1636, 1640, 1332 };
 
-    private final int BANDIT_LEADER_ID = 1878;
+    private static final int BANDIT_LEADER_ID = 1878;
 
     @Override
     public boolean activate()
@@ -114,7 +113,7 @@ public class Sell implements Strategy
         }
 
         while (!itemsToDeposit.isEmpty()
-                && Loader.getClient().isLoggedIn()
+                && Game.isLoggedIn()
                 && Game.getOpenInterfaceId() == 3824)
         {
             int itemId = itemsToDeposit.pop();
@@ -124,7 +123,7 @@ public class Sell implements Strategy
                 Item item = Inventory.getItems(itemId)[Inventory.getItems(itemId).length - 1];
 
                 while (Inventory.getItems(itemId).length > 0
-                        && Loader.getClient().isLoggedIn())
+                        && Game.isLoggedIn())
                 {
                     Menu.sendAction(431, item.getId() - 1, item.getSlot(), 3823);
                     Time.sleep(500);
