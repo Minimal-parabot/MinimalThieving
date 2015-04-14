@@ -24,7 +24,7 @@ import java.util.ArrayList;
         description = "Steals from the stalls at ::home in Ikov.",
         name = "Minimal Thieving",
         servers = { "Ikov" },
-        version = 1.8)
+        version = 1.9)
 
 public class MinimalThieving extends Script implements Paintable, MessageListener
 {

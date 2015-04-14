@@ -24,7 +24,7 @@ public class Steal implements Strategy
         {
             MinimalThieving.status = "Stealing";
 
-            stallObject.interact(0);
+            stallObject.interact(SceneObjects.Option.STEAL_FROM);
 
             Time.sleep(new SleepCondition()
             {

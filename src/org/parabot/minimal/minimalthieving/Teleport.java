@@ -21,8 +21,6 @@ public class Teleport implements Strategy
     {
         MinimalThieving.status = "Teleporting back to stalls";
 
-//        System.out.println("Message: " + Loader.getClient().getInterfaceCache()[372].getMessage());
-
         if (Game.getOpenBackDialogId() != 2459)
         {
             Menu.clickButton(1195);

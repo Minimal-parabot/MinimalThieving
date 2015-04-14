@@ -42,27 +42,6 @@ public enum Stall
         return level;
     }
 
-    public static Stall getStall()
-    {
-        Stall stall = null;
-
-        int level = Skill.THIEVING.getRealLevel();
-
-        for (Stall s : values())
-        {
-            if (level >= s.level)
-            {
-                stall = s;
-            }
-            else
-            {
-                break;
-            }
-        }
-
-        return stall;
-    }
-
     /**
      * Gets the best stall to thieve
      * @return stall
@@ -70,13 +49,13 @@ public enum Stall
     public static int getStallId()
     {
         int level = Skill.THIEVING.getRealLevel();
-        int stallId = 0;
+        int stallId = values()[0].getId();
 
         for (Stall s : values())
         {
-            if (level >= s.level)
+            if (level >= s.getLevel())
             {
-                stallId = s.id;
+                stallId = s.getId();
             }
             else
             {
