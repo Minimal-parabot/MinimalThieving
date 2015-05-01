@@ -77,6 +77,7 @@ public class MinimalThievingGUI extends JFrame
 
             final JRadioButton muleButton = new JRadioButton("Mule");
             muleButton.setFont(FONT);
+            muleButton.setEnabled(false);
             muleButton.addActionListener(new ActionListener()
             {
                 @Override
@@ -116,6 +117,7 @@ public class MinimalThievingGUI extends JFrame
 
             usernameField = new JTextField(10);
             usernameField.setFont(FONT);
+            usernameField.setEnabled(false);
             c.gridx = 0;
             c.gridy = 1;
             add(usernameField, c);

@@ -114,6 +114,7 @@ public class MinimalThieving extends Script implements Paintable, MessageListene
         }
         else if (mode == Mode.MULE)
         {
+            g.setColor(Color.WHITE);
 
             g.drawString("Secondary timer: " + (secondaryTimer.getRemaining() / 1000) + "s", 15, 30);
         }
@@ -169,10 +170,11 @@ public class MinimalThieving extends Script implements Paintable, MessageListene
             }
         }
 
-        if (m.getType() == 4)
-        {
-            tradePlayer(m.getSender());
-        }
+        // Parabot bug that lags out the player every time he's traded
+//        if (m.getType() == 4)
+//        {
+//            tradePlayer(m.getSender());
+//        }
     }
 
     private void tradePlayer(String username)
@@ -188,8 +190,7 @@ public class MinimalThieving extends Script implements Paintable, MessageListene
                     @Override
                     public boolean isValid()
                     {
-                        return Game.getOpenInterfaceId() == 3323
-                                || Game.getOpenInterfaceId() == 3443;
+                        return Trading.isOpen();
                     }
                 }, 5000);
 

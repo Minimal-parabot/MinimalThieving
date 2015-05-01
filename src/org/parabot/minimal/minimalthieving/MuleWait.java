@@ -30,6 +30,20 @@ public class MuleWait implements Strategy
     {
         Logger.addMessage("Waiting 30 seconds for bots to trade");
 
+        if (Inventory.contains(996))
+        {
+            Item goldPieces = Inventory.getItem(996);
+
+            if (goldPieces != null)
+            {
+                Logger.addMessage("Adding " + Inventory.getCount(true, 996) + " coins to money pouch");
+
+                MinimalThieving.moneyGained += Inventory.getCount(true, 996);
+
+                Menu.sendAction(493, goldPieces.getId() - 1, goldPieces.getSlot(), 3214);
+            }
+        }
+
         MinimalThieving.secondaryTimer = new Timer(30000);
 
         Time.sleep(new SleepCondition()
@@ -43,18 +57,6 @@ public class MuleWait implements Strategy
 
         if (Game.getOpenInterfaceId() == -1)
         {
-            if (Inventory.contains(996))
-            {
-                Item goldPieces = Inventory.getItem(996);
-
-                if (goldPieces != null)
-                {
-                    MinimalThieving.moneyGained += Inventory.getCount(true, 996);
-
-                    Menu.sendAction(493, goldPieces.getId() - 1, goldPieces.getSlot(), 3214);
-                }
-            }
-
             Logger.addMessage("Waiting interval");
 
             MinimalThieving.forceLogout();
