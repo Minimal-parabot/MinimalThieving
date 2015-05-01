@@ -1,5 +1,6 @@
 package org.parabot.minimal.minimalthieving;
 
+import org.parabot.core.ui.Logger;
 import org.parabot.environment.api.utils.Time;
 import org.parabot.environment.scripts.framework.SleepCondition;
 import org.parabot.environment.scripts.framework.Strategy;
@@ -20,25 +21,28 @@ public class Wait implements Strategy
     @Override
     public void execute()
     {
-        if (Inventory.getCount(996) > 0)
+        if (Inventory.contains(996))
         {
-            MinimalThieving.status = "Adding coins to pouch";
+            Logger.addMessage("Adding coins to pouch");
 
             Item coins = Inventory.getItem(996);
 
-            Menu.sendAction(493, coins.getId() - 1, coins.getSlot(), 3214);
-
-            Time.sleep(new SleepCondition()
+            if (coins != null)
             {
-                @Override
-                public boolean isValid()
+                Menu.sendAction(493, coins.getId() - 1, coins.getSlot(), 3214);
+
+                Time.sleep(new SleepCondition()
                 {
-                    return Inventory.getCount(996) == 0;
-                }
-            }, 1000);
+                    @Override
+                    public boolean isValid()
+                    {
+                        return Inventory.getCount(996) == 0;
+                    }
+                }, 1000);
+            }
         }
 
-        MinimalThieving.status = "Waiting";
+        Logger.addMessage("Waiting");
 
         Time.sleep(new SleepCondition()
         {
@@ -49,9 +53,6 @@ public class Wait implements Strategy
             }
         }, 1000);
 
-        if (Players.getMyPlayer().getAnimation() == -1)
-        {
-            Time.sleep(500);
-        }
+        Time.sleep(500);
     }
 }

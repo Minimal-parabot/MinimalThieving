@@ -1,5 +1,6 @@
 package org.parabot.minimal.minimalthieving;
 
+import org.parabot.core.ui.Logger;
 import org.parabot.environment.api.utils.Time;
 import org.parabot.environment.scripts.framework.SleepCondition;
 import org.parabot.environment.scripts.framework.Strategy;
@@ -12,68 +13,61 @@ import java.util.Stack;
 
 public class Sell implements Strategy
 {
-    private Npc banditLeader;
-
-    private static final int[] STOLEN_ITEMS = { 951, 1636, 1640, 1332 };
+    private static final int[] STOLEN_ITEMS = Stall.getItemIds();
 
     private static final int BANDIT_LEADER_ID = 1878;
 
     @Override
     public boolean activate()
     {
-        if (Inventory.getCount() >= 27)
-        {
-            for (Npc n : Npcs.getNearest(BANDIT_LEADER_ID))
-            {
-                banditLeader = n;
-
-                return true;
-            }
-        }
-
-        return false;
+        return Inventory.getCount() >= 27;
     }
 
     @Override
     public void execute()
     {
-        if (banditLeader != null)
+        if (Inventory.isFull())
         {
-            if (Inventory.isFull())
+            Logger.addMessage("Making room in inventory");
+
+            Inventory.getItems(STOLEN_ITEMS)[0].drop();
+
+            Time.sleep(new SleepCondition()
             {
-                MinimalThieving.status = "Making room in inventory";
-
-                Inventory.getItems(STOLEN_ITEMS)[0].drop();
-
-                Time.sleep(new SleepCondition()
+                @Override
+                public boolean isValid()
                 {
-                    @Override
-                    public boolean isValid()
-                    {
-                        return !Inventory.isFull();
-                    }
-                }, 1500);
-            }
+                    return !Inventory.isFull();
+                }
+            }, 1500);
+        }
 
+        if (!Inventory.isFull())
+        {
             if (Game.getOpenInterfaceId() != 3824)
             {
-                MinimalThieving.status = "Trading npc";
+                Npc banditLeader = Npcs.getClosest(BANDIT_LEADER_ID);
 
-                banditLeader.interact(0);
-
-                Time.sleep(new SleepCondition()
+                if (banditLeader != null)
                 {
-                    @Override
-                    public boolean isValid()
+                    Logger.addMessage("Trading Bandit leader");
+
+                    banditLeader.interact(Npcs.Option.TALK_TO);
+
+                    Time.sleep(new SleepCondition()
                     {
-                        return Game.getOpenInterfaceId() == 3824;
-                    }
-                }, 5000);
+                        @Override
+                        public boolean isValid()
+                        {
+                            return Game.getOpenInterfaceId() == 3824;
+                        }
+                    }, 5000);
+                }
             }
 
             if (Game.getOpenInterfaceId() == 3824)
             {
-                MinimalThieving.status = "Selling items";
+                Logger.addMessage("Selling items");
 
                 sellAllExcept(996);
 

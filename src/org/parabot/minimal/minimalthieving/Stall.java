@@ -4,10 +4,11 @@ import org.rev317.min.api.methods.Skill;
 
 public enum Stall
 {
-    FOOD_STALL(4875, 1),
-    GENERAL_STALL(4876, 60),
-    MAGIC_STALL(4877, 65),
-    SCIMITAR_STALL(4878, 80);
+    FOOD_STALL(4875, 1, 951),
+    CRAFTING_STALL(4874, 30, 1636),
+    GENERAL_STALL(4876, 60, 1640),
+    MAGIC_STALL(4877, 65, 1392),
+    SCIMITAR_STALL(4878, 80, 1332);
 
     @Override
     public String toString()
@@ -17,11 +18,13 @@ public enum Stall
 
     private int id;
     private int level;
+    private int itemId;
 
-    Stall(int id, int level)
+    Stall(int id, int level, int itemId)
     {
         this.id = id;
         this.level = level;
+        this.itemId = itemId;
     }
 
     /**
@@ -43,42 +46,48 @@ public enum Stall
     }
 
     /**
-     * Gets the best stall to thieve
+     * Gets the item id of the item stolen from the stall
+     * @return itemId
+     */
+    public int getItemId()
+    {
+        return itemId;
+    }
+
+    /**
+     * Gets all the item ids of the items stolen from the stalls
+     * @return itemIds
+     */
+    public static int[] getItemIds()
+    {
+        Stall[] stalls = values();
+        int[] itemIds = new int[stalls.length];
+
+        for (int i = 0; i < itemIds.length; i++)
+        {
+            itemIds[i] = stalls[i].getItemId();
+        }
+
+        return itemIds;
+    }
+
+    /**
+     * Gets the best stall based on our thieving level
      * @return stall
      */
-    public static int getStallId()
+    public static Stall getStall()
     {
         int level = Skill.THIEVING.getRealLevel();
-        int stallId = values()[0].getId();
+        Stall stall = values()[0];
 
         for (Stall s : values())
         {
             if (level >= s.getLevel())
             {
-                stallId = s.getId();
-            }
-            else
-            {
-                break;
+                stall = s;
             }
         }
 
-        return stallId;
-    }
-
-    /**
-     * Gets the object ids of all stalls
-     * @return stallIds
-     */
-    public static int[] getIds()
-    {
-        int[] stallIds = new int[values().length];
-
-        for (int i = 0; i < values().length; i++)
-        {
-            stallIds[i] = values()[i].getId();
-        }
-
-        return stallIds;
+        return stall;
     }
 }

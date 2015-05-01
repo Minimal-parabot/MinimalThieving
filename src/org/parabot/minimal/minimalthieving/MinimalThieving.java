@@ -1,14 +1,19 @@
 package org.parabot.minimal.minimalthieving;
 
+import org.parabot.core.ui.Logger;
 import org.parabot.environment.api.interfaces.Paintable;
+import org.parabot.environment.api.utils.Time;
 import org.parabot.environment.api.utils.Timer;
 import org.parabot.environment.scripts.Category;
 import org.parabot.environment.scripts.Script;
 import org.parabot.environment.scripts.ScriptManifest;
+import org.parabot.environment.scripts.framework.SleepCondition;
 import org.parabot.environment.scripts.framework.Strategy;
 import org.rev317.min.Loader;
 import org.rev317.min.api.events.MessageEvent;
 import org.rev317.min.api.events.listeners.MessageListener;
+import org.rev317.min.api.methods.*;
+import org.rev317.min.api.wrappers.Player;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -24,7 +29,7 @@ import java.util.ArrayList;
         description = "Steals from the stalls at Edgeville in Ikov and sells the items to the Bandit leader.",
         name = "Minimal Thieving",
         servers = { "Ikov" },
-        version = 1.9)
+        version = 2.0)
 
 public class MinimalThieving extends Script implements Paintable, MessageListener
 {
@@ -32,24 +37,53 @@ public class MinimalThieving extends Script implements Paintable, MessageListene
 
     private final Image IMG = getImage("http://i.imgur.com/TNIuZ47.png");
 
-    private Timer timer;
+    private Timer timer = new Timer();
+    public static Timer secondaryTimer = new Timer(30000);
 
-    public static String status = "";
+    public static Mode mode;
 
-    private int moneyGained;
+    private String muleUsername;
+
+    public static int moneyGained;
     private int stealCount;
     private int randomCount;
 
     @Override
     public boolean onExecute()
     {
-        timer = new Timer();
+        MinimalThievingGUI gui = new MinimalThievingGUI();
+        gui.setVisible(true);
+
+        int interval;
+
+        while (gui.isVisible())
+        {
+            sleep(500);
+        }
+
+        muleUsername = gui.getMuleUsername();
+        interval = gui.getInterval();
 
         strategies.add(new Relog());
         strategies.add(new Teleport());
-        strategies.add(new Sell());
-        strategies.add(new Wait());
-        strategies.add(new Steal());
+
+        if (mode == Mode.BOT)
+        {
+            secondaryTimer = new Timer(300000);
+
+            strategies.add(new BotTransfer(muleUsername));
+            strategies.add(new Sell());
+            strategies.add(new Wait());
+            strategies.add(new Steal());
+        }
+        else if (mode == Mode.MULE)
+        {
+            secondaryTimer = new Timer(0);
+
+            strategies.add(new MuleWait(interval));
+            strategies.add(new MuleTransfer());
+        }
+
         provide(strategies);
         return true;
     }
@@ -61,11 +95,28 @@ public class MinimalThieving extends Script implements Paintable, MessageListene
         g.setColor(new Color(31, 34, 50));
 
         g.drawImage(IMG, 546, 209, null);
-        g.drawString(status, 15, 15);
         g.drawString("Time: " + timer.toString(), 555, 271);
         g.drawString("Money(hr): " + getPerHour(moneyGained), 555, 330);
         g.drawString("Steals(hr): " + getPerHour(stealCount), 555, 389);
         g.drawString("Randoms: " + randomCount, 555, 448);
+
+        if (mode == Mode.BOT)
+        {
+            if (secondaryTimer.getRemaining() <= 0)
+            {
+                g.drawString("Available to transfer", 15, 30);
+            }
+            else
+            {
+                g.drawString((secondaryTimer.getRemaining() / 1000) + "s until transfer is ready", 15, 30);
+            }
+            g.drawString("Mule: " + muleUsername, 15, 45);
+        }
+        else if (mode == Mode.MULE)
+        {
+
+            g.drawString("Secondary timer: " + (secondaryTimer.getRemaining() / 1000) + "s", 15, 30);
+        }
     }
 
     @Override
@@ -75,9 +126,10 @@ public class MinimalThieving extends Script implements Paintable, MessageListene
 
         if (m.getType() == 0)
         {
-            if (message.contains("object"))
+            if (message.contains("object") || message.contains("not in a")
+                || message.contains("is already on") || message.contains("exist"))
             {
-                status = "Nulled";
+                Logger.addMessage("Account is nulled");
 
                 forceLogout();
             }
@@ -89,7 +141,7 @@ public class MinimalThieving extends Script implements Paintable, MessageListene
             }
             else if (message.contains("golden ring"))
             {
-                moneyGained += 80;
+                moneyGained += 6000;
 
                 stealCount++;
             }
@@ -116,6 +168,51 @@ public class MinimalThieving extends Script implements Paintable, MessageListene
                 randomCount++;
             }
         }
+
+        if (m.getType() == 4)
+        {
+            tradePlayer(m.getSender());
+        }
+    }
+
+    private void tradePlayer(String username)
+    {
+        for (Player p : Players.getNearest())
+        {
+            if (p.getName().equalsIgnoreCase(username))
+            {
+                p.interact(Players.Option.TRADE);
+
+                Time.sleep(new SleepCondition()
+                {
+                    @Override
+                    public boolean isValid()
+                    {
+                        return Game.getOpenInterfaceId() == 3323
+                                || Game.getOpenInterfaceId() == 3443;
+                    }
+                }, 5000);
+
+                Time.sleep(2000);
+            }
+        }
+    }
+
+    public static void forceLogout()
+    {
+        try
+        {
+            Class<?> c = Loader.getClient().getClass();
+
+            Method m = c.getDeclaredMethod("am");
+            m.setAccessible(true);
+
+            m.invoke(Loader.getClient());
+        }
+        catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     private Image getImage(String str)
@@ -127,22 +224,6 @@ public class MinimalThieving extends Script implements Paintable, MessageListene
         catch(IOException e)
         {
             return null;
-        }
-    }
-
-    // Forces the user to log out
-    private void forceLogout()
-    {
-        try
-        {
-            Class<?> c = Loader.getClient().getClass();
-            Method m = c.getDeclaredMethod("am");
-            m.setAccessible(true);
-            m.invoke(Loader.getClient());
-        }
-        catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e)
-        {
-            e.printStackTrace();
         }
     }
 

@@ -4,48 +4,49 @@ import org.parabot.core.ui.Logger;
 import org.parabot.environment.api.utils.Time;
 import org.parabot.environment.scripts.framework.SleepCondition;
 import org.parabot.environment.scripts.framework.Strategy;
-import org.rev317.min.api.methods.*;
+import org.rev317.min.api.methods.Game;
+import org.rev317.min.api.methods.Menu;
+import org.rev317.min.api.methods.Trading;
 
-public class Teleport implements Strategy
+public class MuleTransfer implements Strategy
 {
-    private static final int BANDIT_LEADER_ID = 1878;
-
     @Override
     public boolean activate()
     {
-        return Npcs.getNearest(BANDIT_LEADER_ID).length == 0;
+        return Trading.isOpen();
     }
 
     @Override
     public void execute()
     {
-        Logger.addMessage("Teleporting back to stalls");
-
-        if (Game.getOpenBackDialogId() != 2459)
+        if (Trading.isOpen(true))
         {
-            Menu.clickButton(1195);
+            Logger.addMessage("Accepting first offer");
+
+            Trading.acceptOffer();
 
             Time.sleep(new SleepCondition()
             {
                 @Override
                 public boolean isValid()
                 {
-                    return Game.getOpenBackDialogId() == 2459;
+                    return Trading.isOpen(false);
                 }
-            }, 2500);
+            }, 5000);
         }
 
-        if (Game.getOpenBackDialogId() == 2459)
+        if (Trading.isOpen(false))
         {
-            Menu.sendAction(315, -1, -1, 2461);
+            Logger.addMessage("Accepting trade");
+
+            Trading.acceptTrade();
 
             Time.sleep(new SleepCondition()
             {
                 @Override
                 public boolean isValid()
                 {
-                    return Players.getMyPlayer().getAnimation() == -1
-                            && Npcs.getNearest(BANDIT_LEADER_ID).length > 0;
+                    return Game.getOpenInterfaceId() == -1;
                 }
             }, 5000);
         }

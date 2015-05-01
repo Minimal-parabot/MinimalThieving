@@ -1,5 +1,6 @@
 package org.parabot.minimal.minimalthieving;
 
+import org.parabot.core.ui.Logger;
 import org.parabot.environment.api.utils.Time;
 import org.parabot.environment.scripts.framework.SleepCondition;
 import org.parabot.environment.scripts.framework.Strategy;
@@ -9,24 +10,26 @@ import org.rev317.min.api.wrappers.SceneObject;
 
 public class Steal implements Strategy
 {
+    private Stall stall = null;
+
     @Override
     public boolean activate()
     {
-        return SceneObjects.getNearest(Stall.getIds()).length > 0;
+        stall = Stall.getStall();
+
+        return SceneObjects.getNearest(stall.getId()).length > 0;
     }
 
     @Override
     public void execute()
     {
-        SceneObject stallObject = SceneObjects.getClosest(Stall.getStallId());
+        SceneObject stallObject = SceneObjects.getClosest(stall.getId());
 
         if (stallObject != null)
         {
-            MinimalThieving.status = "Stealing";
+            Logger.addMessage("Stealing from " + stall);
 
-//            stallObject.interact(SceneObjects.Option.STEAL_FROM);
-
-            stallObject.interact(0);
+            stallObject.interact(SceneObjects.Option.STEAL_FROM);
 
             Time.sleep(new SleepCondition()
             {
