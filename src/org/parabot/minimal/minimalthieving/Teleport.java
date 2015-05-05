@@ -8,12 +8,12 @@ import org.rev317.min.api.methods.*;
 
 public class Teleport implements Strategy
 {
-    private static final int BANDIT_LEADER_ID = 1878;
+    private static final int[] STALL_OBJECT_IDS = Stall.getObjectIds();
 
     @Override
     public boolean activate()
     {
-        return Npcs.getNearest(BANDIT_LEADER_ID).length == 0;
+        return SceneObjects.getNearest(STALL_OBJECT_IDS).length == 0;
     }
 
     @Override
@@ -45,7 +45,7 @@ public class Teleport implements Strategy
                 public boolean isValid()
                 {
                     return Players.getMyPlayer().getAnimation() == -1
-                            && Npcs.getNearest(BANDIT_LEADER_ID).length > 0;
+                            && SceneObjects.getNearest(STALL_OBJECT_IDS).length > 0;
                 }
             }, 5000);
         }

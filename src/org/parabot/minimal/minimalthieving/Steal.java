@@ -17,13 +17,13 @@ public class Steal implements Strategy
     {
         stall = Stall.getStall();
 
-        return SceneObjects.getNearest(stall.getId()).length > 0;
+        return SceneObjects.getNearest(stall.getObjectId()).length > 0;
     }
 
     @Override
     public void execute()
     {
-        SceneObject stallObject = SceneObjects.getClosest(stall.getId());
+        SceneObject stallObject = SceneObjects.getClosest(stall.getObjectId());
 
         if (stallObject != null)
         {

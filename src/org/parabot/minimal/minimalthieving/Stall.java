@@ -16,24 +16,24 @@ public enum Stall
         return name().charAt(0) + name().substring(1).toLowerCase().replace("_", " ");
     }
 
-    private int id;
+    private int objectId;
     private int level;
     private int itemId;
 
-    Stall(int id, int level, int itemId)
+    Stall(int objectId, int level, int itemId)
     {
-        this.id = id;
+        this.objectId = objectId;
         this.level = level;
         this.itemId = itemId;
     }
 
     /**
-     * Gets the id of the stall
-     * @return id
+     * Gets the objectId of the stall
+     * @return objectId
      */
-    public int getId()
+    public int getObjectId()
     {
-        return id;
+        return objectId;
     }
 
     /**
@@ -46,12 +46,25 @@ public enum Stall
     }
 
     /**
-     * Gets the item id of the item stolen from the stall
+     * Gets the item objectId of the item stolen from the stall
      * @return itemId
      */
     public int getItemId()
     {
         return itemId;
+    }
+
+    public static int[] getObjectIds()
+    {
+        Stall[] stalls = values();
+        int[] objectIds = new int[stalls.length];
+
+        for (int i = 0; i < objectIds.length; i++)
+        {
+            objectIds[i] = stalls[i].getObjectId();
+        }
+
+        return objectIds;
     }
 
     /**

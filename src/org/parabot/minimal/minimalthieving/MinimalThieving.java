@@ -2,18 +2,14 @@ package org.parabot.minimal.minimalthieving;
 
 import org.parabot.core.ui.Logger;
 import org.parabot.environment.api.interfaces.Paintable;
-import org.parabot.environment.api.utils.Time;
 import org.parabot.environment.api.utils.Timer;
 import org.parabot.environment.scripts.Category;
 import org.parabot.environment.scripts.Script;
 import org.parabot.environment.scripts.ScriptManifest;
-import org.parabot.environment.scripts.framework.SleepCondition;
 import org.parabot.environment.scripts.framework.Strategy;
 import org.rev317.min.Loader;
 import org.rev317.min.api.events.MessageEvent;
 import org.rev317.min.api.events.listeners.MessageListener;
-import org.rev317.min.api.methods.*;
-import org.rev317.min.api.wrappers.Player;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -29,7 +25,7 @@ import java.util.ArrayList;
         description = "Steals from the stalls at Edgeville in Ikov and sells the items to the Bandit leader.",
         name = "Minimal Thieving",
         servers = { "Ikov" },
-        version = 2.0)
+        version = 2.1)
 
 public class MinimalThieving extends Script implements Paintable, MessageListener
 {
@@ -38,51 +34,20 @@ public class MinimalThieving extends Script implements Paintable, MessageListene
     private final Image IMG = getImage("http://i.imgur.com/TNIuZ47.png");
 
     private Timer timer = new Timer();
-    public static Timer secondaryTimer = new Timer(30000);
 
-    public static Mode mode;
-
-    private String muleUsername;
-
-    public static int moneyGained;
-    private int stealCount;
-    private int randomCount;
+    private int moneyGained;
+    private int itemsStolen;
+    private int randomsCompleted;
 
     @Override
     public boolean onExecute()
     {
-        MinimalThievingGUI gui = new MinimalThievingGUI();
-        gui.setVisible(true);
-
-        int interval;
-
-        while (gui.isVisible())
-        {
-            sleep(500);
-        }
-
-        muleUsername = gui.getMuleUsername();
-        interval = gui.getInterval();
-
         strategies.add(new Relog());
         strategies.add(new Teleport());
-
-        if (mode == Mode.BOT)
-        {
-            secondaryTimer = new Timer(300000);
-
-            strategies.add(new BotTransfer(muleUsername));
-            strategies.add(new Sell());
-            strategies.add(new Wait());
-            strategies.add(new Steal());
-        }
-        else if (mode == Mode.MULE)
-        {
-            secondaryTimer = new Timer(0);
-
-            strategies.add(new MuleWait(interval));
-            strategies.add(new MuleTransfer());
-        }
+        strategies.add(new PouchDeposit());
+        strategies.add(new Sell());
+        strategies.add(new Wait());
+        strategies.add(new Steal());
 
         provide(strategies);
         return true;
@@ -97,27 +62,8 @@ public class MinimalThieving extends Script implements Paintable, MessageListene
         g.drawImage(IMG, 546, 209, null);
         g.drawString("Time: " + timer.toString(), 555, 271);
         g.drawString("Money(hr): " + getPerHour(moneyGained), 555, 330);
-        g.drawString("Steals(hr): " + getPerHour(stealCount), 555, 389);
-        g.drawString("Randoms: " + randomCount, 555, 448);
-
-        if (mode == Mode.BOT)
-        {
-            if (secondaryTimer.getRemaining() <= 0)
-            {
-                g.drawString("Available to transfer", 15, 30);
-            }
-            else
-            {
-                g.drawString((secondaryTimer.getRemaining() / 1000) + "s until transfer is ready", 15, 30);
-            }
-            g.drawString("Mule: " + muleUsername, 15, 45);
-        }
-        else if (mode == Mode.MULE)
-        {
-            g.setColor(Color.WHITE);
-
-            g.drawString("Secondary timer: " + (secondaryTimer.getRemaining() / 1000) + "s", 15, 30);
-        }
+        g.drawString("Steals(hr): " + getPerHour(itemsStolen), 555, 389);
+        g.drawString("Randoms: " + randomsCompleted, 555, 448);
     }
 
     @Override
@@ -138,63 +84,35 @@ public class MinimalThieving extends Script implements Paintable, MessageListene
             {
                 moneyGained += 5120;
 
-                stealCount++;
+                itemsStolen++;
             }
             else if (message.contains("golden ring"))
             {
                 moneyGained += 6000;
 
-                stealCount++;
+                itemsStolen++;
             }
             else if (message.contains("emerald ring"))
             {
                 moneyGained += 12000;
 
-                stealCount++;
+                itemsStolen++;
             }
             else if (message.contains("battlestaff"))
             {
                 moneyGained += 16000;
 
-                stealCount++;
+                itemsStolen++;
             }
             else if (message.contains("adamant scimitar"))
             {
                 moneyGained += 20000;
 
-                stealCount++;
+                itemsStolen++;
             }
             else if (message.contains("anti-bot"))
             {
-                randomCount++;
-            }
-        }
-
-        // Parabot bug that lags out the player every time he's traded
-//        if (m.getType() == 4)
-//        {
-//            tradePlayer(m.getSender());
-//        }
-    }
-
-    private void tradePlayer(String username)
-    {
-        for (Player p : Players.getNearest())
-        {
-            if (p.getName().equalsIgnoreCase(username))
-            {
-                p.interact(Players.Option.TRADE);
-
-                Time.sleep(new SleepCondition()
-                {
-                    @Override
-                    public boolean isValid()
-                    {
-                        return Trading.isOpen();
-                    }
-                }, 5000);
-
-                Time.sleep(2000);
+                randomsCompleted++;
             }
         }
     }

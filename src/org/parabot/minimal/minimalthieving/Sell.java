@@ -13,7 +13,7 @@ import java.util.Stack;
 
 public class Sell implements Strategy
 {
-    private static final int[] STOLEN_ITEMS = Stall.getItemIds();
+    private static final int[] STOLEN_ITEM_IDS = Stall.getItemIds();
 
     private static final int BANDIT_LEADER_ID = 1878;
 
@@ -30,7 +30,7 @@ public class Sell implements Strategy
         {
             Logger.addMessage("Making room in inventory");
 
-            Inventory.getItems(STOLEN_ITEMS)[0].drop();
+            Inventory.getItems(STOLEN_ITEM_IDS)[0].drop();
 
             Time.sleep(new SleepCondition()
             {
@@ -69,59 +69,18 @@ public class Sell implements Strategy
             {
                 Logger.addMessage("Selling items");
 
-                sellAllExcept(996);
-
-                Time.sleep(new SleepCondition()
+                do
                 {
-                    @Override
-                    public boolean isValid()
+                    Item item = Inventory.getItems(STOLEN_ITEM_IDS)[0];
+
+                    if (item != null)
                     {
-                        return Inventory.getCount() == 1;
+                        Menu.sendAction(431, item.getId() - 1, item.getSlot(), 3823);
+
+                        Time.sleep(250);
                     }
-                }, 1500);
-            }
-        }
-    }
-
-    /**
-     * Sells all items except the ones we specify in the parameter
-     * @param ids the ids of the items we don't want to sell
-     */
-    public void sellAllExcept(int... ids)
-    {
-        ArrayList<Integer> ignored = new ArrayList<>();
-        Stack<Integer> itemsToDeposit = new Stack<>();
-
-        for (int i : ids)
-        {
-            ignored.add(i);
-        }
-
-        for (Item i : Inventory.getItems())
-        {
-            if (!ignored.contains(i.getId())
-                    && !itemsToDeposit.contains(i.getId()))
-            {
-                itemsToDeposit.push(i.getId());
-            }
-        }
-
-        while (!itemsToDeposit.isEmpty()
-                && Game.isLoggedIn()
-                && Game.getOpenInterfaceId() == 3824)
-        {
-            int itemId = itemsToDeposit.pop();
-
-            if (Inventory.getItems(itemId).length > 0)
-            {
-                Item item = Inventory.getItems(itemId)[Inventory.getItems(itemId).length - 1];
-
-                while (Inventory.getItems(itemId).length > 0
-                        && Game.isLoggedIn())
-                {
-                    Menu.sendAction(431, item.getId() - 1, item.getSlot(), 3823);
-                    Time.sleep(500);
                 }
+                while (Inventory.contains(STOLEN_ITEM_IDS) && Game.isLoggedIn());
             }
         }
     }
