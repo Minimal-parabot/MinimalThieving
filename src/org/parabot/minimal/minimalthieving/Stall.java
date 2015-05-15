@@ -10,12 +10,6 @@ public enum Stall
     MAGIC_STALL(4877, 65, 1392),
     SCIMITAR_STALL(4878, 80, 1332);
 
-    @Override
-    public String toString()
-    {
-        return name().charAt(0) + name().substring(1).toLowerCase().replace("_", " ");
-    }
-
     private int objectId;
     private int level;
     private int itemId;
@@ -54,6 +48,10 @@ public enum Stall
         return itemId;
     }
 
+    /**
+     * Gets all the object ids of the stalls
+     * @return objectIds
+     */
     public static int[] getObjectIds()
     {
         Stall[] stalls = values();
@@ -102,5 +100,15 @@ public enum Stall
         }
 
         return stall;
+    }
+
+    /**
+     * Overrides the toString method to print out the enum name
+     * @return name
+     */
+    @Override
+    public String toString()
+    {
+        return name().charAt(0) + name().substring(1).toLowerCase().replace("_", " ");
     }
 }

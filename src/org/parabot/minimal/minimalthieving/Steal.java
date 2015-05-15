@@ -27,7 +27,7 @@ public class Steal implements Strategy
 
         if (stallObject != null)
         {
-            Logger.addMessage("Stealing from " + stall);
+            Logger.addMessage("Stealing from " + stall, false);
 
             stallObject.interact(SceneObjects.Option.STEAL_FROM);
 

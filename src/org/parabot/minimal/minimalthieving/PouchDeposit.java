@@ -26,7 +26,7 @@ public class PouchDeposit implements Strategy
 
         if (coins != null)
         {
-            Logger.addMessage("Adding " + coins.getStackSize() + " coins to pouch");
+            Logger.addMessage("Adding " + coins.getStackSize() + " coins to pouch", true);
 
             Menu.sendAction(493, coins.getId() - 1, coins.getSlot(), 3214);
 

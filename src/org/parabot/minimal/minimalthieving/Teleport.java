@@ -19,7 +19,7 @@ public class Teleport implements Strategy
     @Override
     public void execute()
     {
-        Logger.addMessage("Teleporting back to stalls");
+        Logger.addMessage("Teleporting back to stalls", true);
 
         if (Game.getOpenBackDialogId() != 2459)
         {

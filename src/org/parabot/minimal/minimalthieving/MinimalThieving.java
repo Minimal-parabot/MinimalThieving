@@ -13,19 +13,18 @@ import org.rev317.min.api.events.listeners.MessageListener;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
+
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 @ScriptManifest(author = "Minimal",
-        category = Category.THIEVING,
-        description = "Steals from the stalls at Edgeville in Ikov and sells the items to the Bandit leader.",
         name = "Minimal Thieving",
+        category = Category.THIEVING,
+        description = "Steals from the stalls at Edgeville on Ikov and sells the items to the Bandit leader.",
         servers = { "Ikov" },
-        version = 2.1)
+        version = 2.2)
 
 public class MinimalThieving extends Script implements Paintable, MessageListener
 {
@@ -76,7 +75,7 @@ public class MinimalThieving extends Script implements Paintable, MessageListene
             if (message.contains("object") || message.contains("not in a")
                 || message.contains("is already on") || message.contains("exist"))
             {
-                Logger.addMessage("Account is nulled");
+                Logger.addMessage("Account is nulled", false);
 
                 forceLogout();
             }
@@ -128,7 +127,7 @@ public class MinimalThieving extends Script implements Paintable, MessageListene
 
             m.invoke(Loader.getClient());
         }
-        catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e)
+        catch (Exception e)
         {
             e.printStackTrace();
         }
@@ -140,7 +139,7 @@ public class MinimalThieving extends Script implements Paintable, MessageListene
         {
             return ImageIO.read(new URL(str));
         }
-        catch(IOException e)
+        catch(Exception e)
         {
             return null;
         }

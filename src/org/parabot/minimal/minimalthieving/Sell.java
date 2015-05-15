@@ -28,7 +28,7 @@ public class Sell implements Strategy
     {
         if (Inventory.isFull())
         {
-            Logger.addMessage("Making room in inventory");
+            Logger.addMessage("Making room in inventory", false);
 
             Inventory.getItems(STOLEN_ITEM_IDS)[0].drop();
 
@@ -50,7 +50,7 @@ public class Sell implements Strategy
 
                 if (banditLeader != null)
                 {
-                    Logger.addMessage("Trading Bandit leader");
+                    Logger.addMessage("Trading Bandit leader", false);
 
                     banditLeader.interact(Npcs.Option.TALK_TO);
 
@@ -67,7 +67,7 @@ public class Sell implements Strategy
 
             if (Game.getOpenInterfaceId() == 3824)
             {
-                Logger.addMessage("Selling items");
+                Logger.addMessage("Selling items", false);
 
                 do
                 {

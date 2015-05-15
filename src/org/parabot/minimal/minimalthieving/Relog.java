@@ -20,7 +20,7 @@ public class Relog implements Strategy
     @Override
     public void execute()
     {
-        Logger.addMessage("Relogging");
+        Logger.addMessage("Relogging", true);
 
         Keyboard.getInstance().clickKey(KeyEvent.VK_ENTER);
 
@@ -35,7 +35,7 @@ public class Relog implements Strategy
 
         if (Game.isLoggedIn())
         {
-            Logger.addMessage("Waiting after login..");
+            Logger.addMessage("Waiting after login..", false);
 
             Time.sleep(4000);
         }
