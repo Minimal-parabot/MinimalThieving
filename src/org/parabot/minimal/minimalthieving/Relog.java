@@ -35,7 +35,7 @@ public class Relog implements Strategy
 
         if (Game.isLoggedIn())
         {
-            Logger.addMessage("Waiting after login..", false);
+            Logger.addMessage("Waiting after login..", true);
 
             Time.sleep(4000);
         }

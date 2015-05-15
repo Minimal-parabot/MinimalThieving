@@ -75,7 +75,7 @@ public class MinimalThieving extends Script implements Paintable, MessageListene
             if (message.contains("object") || message.contains("not in a")
                 || message.contains("is already on") || message.contains("exist"))
             {
-                Logger.addMessage("Account is nulled", false);
+                Logger.addMessage("Account is nulled", true);
 
                 forceLogout();
             }

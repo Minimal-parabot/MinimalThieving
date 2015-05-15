@@ -21,7 +21,7 @@ public class Wait implements Strategy
     @Override
     public void execute()
     {
-        Logger.addMessage("Waiting", false);
+        Logger.addMessage("Waiting", true);
 
         Time.sleep(new SleepCondition()
         {
