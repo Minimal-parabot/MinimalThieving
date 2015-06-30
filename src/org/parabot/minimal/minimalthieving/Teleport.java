@@ -44,8 +44,7 @@ public class Teleport implements Strategy
                 @Override
                 public boolean isValid()
                 {
-                    return Players.getMyPlayer().getAnimation() == -1
-                            && SceneObjects.getNearest(STALL_OBJECT_IDS).length > 0;
+                    return SceneObjects.getNearest(STALL_OBJECT_IDS).length > 0;
                 }
             }, 5000);
         }

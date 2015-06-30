@@ -14,6 +14,7 @@ import org.rev317.min.api.events.listeners.MessageListener;
 import javax.imageio.ImageIO;
 import java.awt.*;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -116,18 +117,16 @@ public class MinimalThieving extends Script implements Paintable, MessageListene
         }
     }
 
-    public static void forceLogout()
+    private void forceLogout()
     {
         try
         {
-            Class<?> c = Loader.getClient().getClass();
-
-            Method m = c.getDeclaredMethod("am");
+            Method m = Loader.getClient().getClass().getDeclaredMethod("W");
             m.setAccessible(true);
 
             m.invoke(Loader.getClient());
         }
-        catch (Exception e)
+        catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e)
         {
             e.printStackTrace();
         }
@@ -147,20 +146,17 @@ public class MinimalThieving extends Script implements Paintable, MessageListene
 
     private String formatNumber(double number)
     {
-        DecimalFormat normal = new DecimalFormat("#,###.0");
-        DecimalFormat goldFarmer = new DecimalFormat("#,###.00");
-
         if (number >= 1000 && number < 1000000)
         {
-            return normal.format(number / 1000) + "K";
+            return new DecimalFormat("#,###.0").format(number / 1000) + "K";
         }
         else if (number >= 1000000 && number < 1000000000)
         {
-            return normal.format(number / 1000000) + "M";
+            return new DecimalFormat("#,###.0").format(number / 1000000) + "M";
         }
         else if (number >= 1000000000)
         {
-            return goldFarmer.format(number / 1000000000) + "B";
+            return new DecimalFormat("#,###.00").format(number / 1000000000) + "B";
         }
 
         return "" + number;
